@@ -84,18 +84,13 @@ pipeline {
             }
         }
 
-       stage('Build image') {
-            steps {
-                sh 'docker build -t fatmahmed/java-app:latest .'
-            }
-        }
-
 
         stage('Docker Build & Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DH_USER', passwordVariable: 'DH_PASS')]) {
                     sh """
                         echo "$DH_PASS" | docker login -u "$DH_USER" --password-stdin
+                        sh "docker build -t ${DOCKER_HUB}:latest ."
                         sh "docker push ${DOCKER_HUB}:latest"
                     """
                 }
